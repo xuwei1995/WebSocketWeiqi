@@ -1,0 +1,11 @@
+ .border{
+	 	margin:0 auto;
+        width: 99%;
+        height: 800px;
+        padding: 0px;
+        border: 1px solid #ccc;
+	 }
+	 .noWboder{
+	 	margin: 5px;
+	 	border: 1px solid #ccc;
+	 }

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>websocket</title>
+		<script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
+        <script type="text/javascript" src="js/bootstrap.js" ></script>
+	    <script type="text/javascript" src="js/socket.js" ></script>
+	    <script type="text/javascript" src="js/layer.js" ></script>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/index.css" />
+	</head>
+    <body>
+		<div  class="border"	style="margin-top:50px;" >
+			<div id="" style="float: left; width: 29%;"  class="" >
+					<div class="row form-group">
+					        <div class="form-group col-xs-12 "style="margin-top: 10px;">
+					        	 <div class="col-xs-12">
+					             <input  type="text"  class="form-control" id="serverAddress" name="" placeholder="请输入服务器地址" />
+					             </div>
+							</div>
+							<div class="form-group col-xs-12 col-xs-12"  >
+						    <div class="row-fluid">
+							<div class="col-xs-7">
+							<button type="button" class="btn  btn-primary" id="clientWebSocketBtn" onclick="" >
+								<span>连&nbsp;接</span>
+							</button>
+							<button type="button" class="btn  btn-danger" id="closeWebSocketBtn" onclick="" >
+								<span>断&nbsp;开</span>
+							</button>
+							<button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>棋盘UID</span>
+							           </button>
+							</div>
+							<div class="col-xs-5">
+								  <input type="text"  class="form-control" id="" name=""  value="a5f1090cb0a04756cb21807151544d4db40d0a" />
+							</div>
+						    </div>
+							</div> 
+								<div class="form-group col-xs-12" >
+							        <div class="col-xs-12">
+										
+							           <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>对局开始</span>
+							           </button>
+							            <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>对局结束</span>
+							           </button>
+							          
+							          
+									</div>
+								</div>
+								<div class="form-group col-xs-12" >
+							        <div class="col-xs-12">
+							        	  <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>模式查看</span>
+							           </button>
+										 <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>模式切换</span>
+							           </button>
+							            <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>棋局记录情况</span>
+							           </button>
+							          
+									</div>
+								</div>
+								<div class="form-group col-xs-12" >
+							        <div class="col-xs-12">
+							        	  <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>棋局复现</span>
+							           </button>
+										 <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>棋局上传</span>
+							           </button>
+							            <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>当前棋局上传</span>
+							           </button>
+							          
+									</div>
+								</div>
+							     <div class="form-group col-xs-12" >
+							        <div class="col-xs-12">
+							        	  <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>最后棋局删除</span>
+							           </button>
+										 <button type="button" class="btn  btn-primary" id="" onclick="" >
+								         <span>历史棋局删除</span>
+							           </button>
+							            
+							          
+									</div>
+								</div>     
+							    <div class="form-group col-xs-12" >
+							        <div class="col-xs-12">
+										<textarea name="" class=" form-control" rows="5" cols="45" maxlength="200" id="sendMsg"> </textarea>
+										
+									</div>
+								</div>
+								
+								<div class="form-group col-xs-12" >
+							        <div class="col-xs-12">
+										  <button style="width: 100%" type="button" class="btn   btn-inverse" id="" onclick="sendEmit()" >
+								             <span>发&nbsp;送(Enter)</span>
+							                </button>  
+									</div>
+								</div>
+								 
+					</div>
+			</div>
+			
+	        <div  id="" style="float: right; width: 69%;height: 95%;" class="noWboder" >
+			       <div class="row">
+
+					   <div class="panel-body" id="content"></div>
+			       </div>
+		    </div>
+		</div>
+	</body>
+</html>
