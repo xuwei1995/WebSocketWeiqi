@@ -3,21 +3,26 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>websocket</title>
+		<link rel="stylesheet" href="wgo/wgo.player.css">
 		<script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
         <script type="text/javascript" src="js/bootstrap.js" ></script>
-	    <script type="text/javascript" src="js/socket.js" ></script>
+
 	    <script type="text/javascript" src="js/layer.js" ></script>
+		<script type="text/javascript" src="wgo/wgo.min.js"></script>
+		<script type="text/javascript" src="js/zepto_1.1.3.js"></script>
+
 		<link rel="stylesheet" href="css/bootstrap.css" />
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/index.css" />
+
 	</head>
     <body>
-		<div  class="border"	style="margin-top:50px;" >
-			<div id="" style="float: left; width: 29%;"  class="" >
+		<div id="main" class=""	style="margin-top:20px;" >
+			<div id="" style="float: left;width: 30%;"  class="" >
 					<div class="row form-group">
 					        <div class="form-group col-xs-12 "style="margin-top: 10px;">
 					        	 <div class="col-xs-12">
-					             <input  type="text"  class="form-control" id="serverAddress" name="" placeholder="请输入服务器地址" />
+					             <input value="192.168.1.199:8989/websocket"  type="text"  class="form-control" id="serverAddress" name="" placeholder="请输入服务器地址" />
 					             </div>
 							</div>
 							<div class="form-group col-xs-12 col-xs-12"  >
@@ -29,22 +34,47 @@
 							<button type="button" class="btn  btn-danger" id="closeWebSocketBtn" onclick="" >
 								<span>断&nbsp;开</span>
 							</button>
-							<button type="button" class="btn  btn-primary" id="" onclick="" >
-								         <span>棋盘UID</span>
-							           </button>
-							</div>
-							<div class="col-xs-5">
-								  <input type="text"  class="form-control" id="" name=""  value="a5f1090cb0a04756cb21807151544d4db40d0a" />
-							</div>
+
 						    </div>
-							</div> 
+							</div>
+							</div>
+
+						    <div class="form-group col-xs-12" >
+								<div class="col-xs-9">
+									<input type="text"  class="form-control" id="deviceNo" name=""  value="a5f1090cb0a04756cb21807151544d4db40d0a" />
+								</div>
+								<div class="col-xs-3">
+								<button type="button" class="btn  btn-primary " id="" onclick="connectDevice()"  style="width:100%;">
+									<span>连接棋盘</span>
+								</button>
+								</div>
+
+
+							</div>
+						<div class="form-group col-xs-12" >
+							<div class="col-xs-3">
+								<input type="text"  class="form-control" id="x" name=""  value="" placeholder="X坐标" />
+							</div>
+							<div class="col-xs-3">
+								<input type="text"  class="form-control" id="y" name=""  value="" placeholder="Y坐标"/>
+							</div>
+							<div class="col-xs-3">
+								<input type="text"  class="form-control" id="c" name=""  value="" placeholder="黑白子"/>
+							</div>
+							<div class="col-xs-3">
+								<button type="button" class="btn  btn-primary " id="" onclick="downChress()"  style="width:100%;">
+									<span>落子</span>
+								</button>
+							</div>
+						</div>
+
 								<div class="form-group col-xs-12" >
 							        <div class="col-xs-12">
 										
-							           <button type="button" class="btn  btn-primary" id="" onclick="" >
+							           <button type="button" class="btn  btn-primary" id="" onclick="startGame()" >
 								         <span>对局开始</span>
 							           </button>
-							            <button type="button" class="btn  btn-primary" id="" onclick="" >
+							            <button type="button" class="btn  btn-primary" id="" onclick="endGame()" >
 								         <span>对局结束</span>
 							           </button>
 							          
@@ -93,14 +123,14 @@
 								</div>     
 							    <div class="form-group col-xs-12" >
 							        <div class="col-xs-12">
-										<textarea name="" class=" form-control" rows="5" cols="45" maxlength="200" id="sendMsg"> </textarea>
+										<textarea onchange="sendMsgChange()" name="" class=" form-control" rows="5" cols="45" maxlength="200" id="sendMsg"> </textarea>
 										
 									</div>
 								</div>
 								
 								<div class="form-group col-xs-12" >
 							        <div class="col-xs-12">
-										  <button style="width: 100%" type="button" class="btn   btn-inverse" id="" onclick="sendEmit()" >
+										  <button style="width: 100%" type="button" class="btn   btn-inverse" id="sendBtn" onclick="sendEmit()" >
 								             <span>发&nbsp;送(Enter)</span>
 							                </button>  
 									</div>
@@ -109,12 +139,188 @@
 					</div>
 			</div>
 			
-	        <div  id="" style="float: right; width: 69%;height: 95%;" class="noWboder" >
-			       <div class="row">
+	        <div  id="" style="float: right; width: 68%;" class="" >
+				<div class="mui-content" >
+					<div id="board" >
 
-					   <div class="panel-body" id="content"></div>
-			       </div>
-		    </div>
+					</div>
+					<ul class="mui-table-view" id="btnList">
+								   <button type="button" data-type="first" class="mui-btn mui-btn-blue">第一手</button>
+								   <button type="button" data-type="previous" class="mui-btn mui-btn-blue">上一步</button>
+								   <button type="button" data-type="next" class="mui-btn mui-btn-blue">下一步</button>
+								   <button type="button" data-type="last" class="mui-btn mui-btn-blue">最新手</button>
+								   <button type="button" data-type="tosgf" class="mui-btn mui-btn-blue">tosgf</button>
+								   <button type="button" data-type="mark" class="mui-btn mui-btn-blue">切换标记</button>
+								   <button type="button" data-type="trymove" class="mui-btn mui-btn-blue">试下</button>
+								   <button type="button" data-type="endtry" class="mui-btn mui-btn-blue">结束试下</button>
+								   <button type="button" data-type="delete" class="mui-btn mui-btn-blue">删一子</button>
+								   <button type="button" data-type="deleteAll" class="mui-btn mui-btn-blue">删后续节点</button>
+								   <button type="button" data-type="deleteBranch" class="mui-btn mui-btn-blue">删除分支</button>
+								   <button type="button" data-type="addBranch" class="mui-btn mui-btn-blue">添加分支</button>
+								   <button type="button" data-type="pass" class="mui-btn mui-btn-blue">pass</button>
+					</ul>
+					<ul class="mui-table-view" id="branchs"></ul>
+				</div>
+			</div>
 		</div>
+		<script type="text/javascript" src="wgo/kifu.js"></script>
+		<script type="text/javascript" src="wgo/sgfparser.js"></script>
+		<script type="text/javascript" src="wgo/player.js"></script>
+		<script type="text/javascript" src="wgo/basicplayer.js"></script>
+		<script type="text/javascript" src="wgo/player.editable.js"></script>
+		<script type="text/javascript" src="wgo/scoremode.js"></script>
+		<script type="text/javascript" src="wgo/player.trymove.js"></script>
+		<script type="text/javascript" src="wgo/player.maker.js"></script>
+		<script>
+            //获取棋盘容器
+            var element = document.getElementById('board');
+            tempBranch = {
+                path: 0,
+                index: 0,
+            };
+            //定义一个棋谱
+            var sgf = '(;CA[utf-8]SZ[19]AP[MultiGo:4.4.4]MULTIGOGM[1];W[aa];B[ab];W[ac];B[ad];W[ae]C[这是评论](;B[af];W[ag];B[ah];W[ai];B[aj](;W[ak](;B[al](;W[am](;B[an](;W[ao];B[ap];W[aq](;B[ar];W[as])(;B[bq];W[br](;B[bs])(;B[cr]))(;B[cq];W[cr];B[cs]))(;W[bn];B[bo];W[bp]))(;B[bm];W[bn];B[bo]))(;W[bl];B[bm];W[bn]))(;B[bk];W[bl];B[bm]))(;W[bj];B[bk];W[bl]))(;B[be];W[bf];B[bg](;W[bh];B[bi])(;W[cg];B[ch];W[ci])))';
+            //实例化棋盘对象
+            player = new WGo.BasicPlayer(element, {
+                sgf: sgf,
+                enableWheel: false,
+                enableKeys: false,
+                markLastMove: false,
+                displayVariations: false,
+                selectBranch: false,
+                board: {
+                    background: WGo.DIR + "board.jpg",
+                },
+                update: function(e) {
+                    //非分支状态
+                    if(tempBranch.path == 0) {
+                        //清空分支列表
+                        $('#branchs').empty();
+                        //含有分支
+                        if(e.node.children.length > 1)
+                            for(var i = 1; i < e.node.children.length; i++)
+                                //输入分支
+                                $('#branchs').append('<li data-index="' + i + '" >分支' + i + '</li>')
+                    }
+                }
+            })
+
+            //定义标记默认样式
+            defaultConfig = {
+                markerStyle: 'LB',
+                markerNum: 1, //标记棋子的数量
+                start: 0,
+                lastMoveColor: 'red',
+                branchPath: -1
+            }
+            marker = new WGo.Player.Marker(player, player.board, defaultConfig);
+            player.last();
+            editable = new WGo.Player.Editable(player, player.board, playCb.bind(this));
+            editable.set(true)
+            $('#branchs').on('tap', 'li', function() {
+                var branchId = this.getAttribute('data-index');
+                if(tempBranch.path > 0) {
+                    player.goTo(tempBranch.path);
+                }
+                editable.setPlayType('try');
+                player.kifuReader.node._last_selected = parseInt(branchId);
+                tempBranch.path = player.kifuReader.path.m;
+                tempBranch.index = parseInt(branchId);
+                marker.config.branchPath = tempBranch.path;
+                player.last();
+            })
+
+            function playCb(x, y, type) {
+                switch(type) {
+                    case 'select':
+                        if(confirm('覆盖？')) {
+                            _editable.setPlayType('cover');
+                            _editable.play(x, y);
+                        } else {
+                            _editable.setPlayType('insert');
+                            _editable.play(x, y);
+                        }
+                        break;
+                    case 'cover':
+                        _editable.setPlayType('normal');
+                        break;
+                }
+            }
+            //绑定棋盘功能按钮
+            $('#btnList').on('click', 'button', function() {
+                var type = this.getAttribute('data-type');
+                //定义当前手数
+                var curPath = player.kifuReader.path.m;
+                switch(type) {
+                    case 'first':
+                        player.first(); //第一手
+                        break;
+                    case 'previous':
+                        player.previous(); //回退一手
+                        break;
+                    case 'next':
+                        player.next(); //前进一手
+                        break;
+                    case 'last':
+                        player.last(); //到最新手
+                    case 'tosgf':
+                        var sgf = player.kifuReader.kifu.toSgf(); //获取sgf
+                        break;
+                    case 'mark': //切换标记
+                        var markerConfig = defaultConfig;
+                        if(markerConfig.markerStyle == 'LB' && markerConfig.markerNum == 1) {
+                            markerConfig.markerNum = 0;
+                        } else if(markerConfig.markerStyle == 'LB' && markerConfig.markerNum == 0) {
+                            markerConfig.markerNum = 1;
+                        }
+                        marker.switchMaker(markerConfig)
+                        break;
+                    case 'trymove':
+                        tryMove = new WGo.TryMove(player, player.board, marker) //试下
+                        break;
+                    case 'endtry':
+                        tryMove.endTry();
+                        break;
+                    case 'delete':
+                        var curNode = player.kifuReader.node; //获取当前节点
+                        var parent = curNode.parent; //获取父节点（前一子）
+                        var children = curNode.children; //获取子节点（后一子）
+                        //此处判断当前节点是否为最后一手
+                        if(children.length > 0) {
+                            children[curNode._last_selected].parent = parent;
+                            children = [children[0]];
+                        }
+                        parent.children = children;
+                        var path = player.kifuReader.path.m;
+                        player.kifuReader.node = parent;
+                        player.goTo(path - 1);
+                        break;
+                    case 'deleteAll':
+                        player.kifuReader.node.parent.children = [];
+                        var path = player.kifuReader.path.m;
+                        player.goTo(path - 1);
+                        break;
+                    case 'deleteBranch':
+                        marker.config.branchPath = -1;
+                        player.goTo(tempBranch.path);
+                        player.kifuReader.node.children.splice(tempBranch.index, 1);
+                        player.kifuReader.node._last_selected = 0;
+                        tempBranch.path = 0;
+                        tempBranch.index = 0;
+                        editable.setPlayType('normal');
+                        break;
+                    case 'addBranch':
+                        editable.setPlayType('try');
+                        player.kifuReader.node._last_selected = player.kifuReader.node.children.length;
+                        tempBranch.path = player.kifuReader.path.m;
+                        marker.config.branchPath = tempBranch.path;
+                        break;
+                    case 'pass':
+                        editable.pass();
+                        break;
+                }
+            })
+		</script>
+		<script type="text/javascript" src="js/socket.js" ></script>
 	</body>
 </html>
