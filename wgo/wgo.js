@@ -1544,6 +1544,7 @@ Board.prototype = {
 				handleEvent: function(e) {
 					var coo = getMousePos.call(_this, e);
 					callback(coo.x, coo.y, e);
+					callBackClickChressBoard(coo.x, coo.y)
 				}
 			};
 

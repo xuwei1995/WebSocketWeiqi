@@ -1,7 +1,11 @@
 var webSocket=null; //
 var loading=null;  //阻塞等待框
+var isDeviceSuccess=false;//是否成功连接设备
 var errorCode=null; //webSocket返回码
 var editable=null;  //WGo.Player.Editable
+var setChress=0;
+var player=null;
+var lastDownNum=0;
 $(document).ready(function(){
     window.onresize=function(){
         $("#main").width($(window).width()-35);
@@ -193,6 +197,7 @@ $(document).ready(function(){
                 editable.pass();
                 break;
         }
+
     })
     marker.config.branchPath = -1;
     player.goTo(tempBranch.path);
@@ -311,6 +316,7 @@ function setChessBoard(x,y,c) {
  */
 function  receiveChessBoard(x,y,c) {
     editable.play(x,y,c);//棋盘落子
+    setChress+2;
 }
 function sendMsgToServer(msg) {
     msg=JSON.stringify(msg);
@@ -341,7 +347,11 @@ function listen(){
               {
                   if(data.jsonObject==null)
                   {
-                      layer.msg(data.codeMessage)
+                      layer.msg(data.codeMessage);
+                      if(data.codeMessage=="棋盘连接成功")
+                      {
+                         isDeviceSuccess=true;
+                      }
                   }else {
                      if(data.jsonObject.hasOwnProperty("x")&&data.jsonObject.hasOwnProperty("y")&&data.jsonObject.hasOwnProperty("c"))
                      {
@@ -349,7 +359,7 @@ function listen(){
                          {
                              data.jsonObject.c=-1
                          }
-                         receiveChessBoard(data.jsonObject.x,data.jsonObject.y,data.jsonObject.c);
+                         receiveChessBoard(data.jsonObject.x-1,data.jsonObject.y-1,data.jsonObject.c);
                      }
 
                   }
@@ -391,32 +401,21 @@ function listen(){
        if(sendMsg==null||sendMsg=="")
        {
         layer.alert("发送内容不能为空");
-
-            return;
+           return;
        }
        if(webSocket==null)
        {
         layer.alert("请先连接WebSocket")
-        return;
+           return;
        }
     //encodeScript方法用来转义<>标签，防止脚本输入
     var text = encodeScript(sendMsg);
-    var msg = {
-        "device" : text,
-        "command" : "CONNECT_DEVICE",
-       /* "bubbleColor" : "#2E2E2E",
-        "fontSize" : "12",
-        "fontType" : "黑体"*/
-    };
-    console.log("发送文本:\t"+msg)
-    msg = JSON.stringify(msg);
+        text = JSON.stringify(text)
+        consl
     //向服务端发送消息
-    webSocket.send(msg);
-    //将自己发送的消息内容静态加载到html上，服务端实现自己发送的消息不会推送给自己
-    $("#content").append("<kbd style='color: #" + "CECECE" + ";float: right; font-size: " + 12 + ";'>" + text +  "</kbd><br/>");
+    webSocket.send(text);
 
-
-}
+    }
 function  pleaseClientWebSocket() {
     layer.alert("请先连接webSocket")
 }
@@ -426,5 +425,24 @@ function encodeScript(data) {
     }
     return data.replace("<", "&lt;").replace(">", "&gt;");
 }
+/**
+ * 点击网页棋盘发送亮灯指令
+ *@Author xw
+ *@Date 2017/11/23 16:48
+ */
+function callBackClickChressBoard(x,y) {
+    var tem=player.kifuReader.path.m;
+    if(tem!=lastDownNum)
+    {
+        var blackOrWhite=tem%2==0?2:WGo.B; //根据最后落子点判断亮灯色
+        lastDownNum=tem;
+        if(!isDeviceSuccess)
+        {
+            layer.msg("目前没有连接棋盘设备")
+        }else {
+            setChessBoard(x+1,y+1,blackOrWhite);//网页和物理棋盘坐标（0-18）（0-19）
+        }
 
+    }
+}
 
