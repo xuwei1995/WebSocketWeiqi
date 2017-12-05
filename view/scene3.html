@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>场景三复盘模式</title>
+    <link rel="stylesheet" href="../wgo/wgo.player.css">
+    <script type="text/javascript" src="../js/jquery-3.2.1.min.js" ></script>
+    <script type="text/javascript" src="../js/bootstrap.js" ></script>
+    <script type="text/javascript" src="../js/layer.js" ></script>
+    <script type="text/javascript" src="../wgo/wgo.min.js"></script>
+    <script type="text/javascript" src="../js/zepto_1.1.3.js"></script>
+    <script type="text/javascript" src="../wgo/wgo.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/index.css" />
+</head>
+<body>
+<div id="main" class=""	style="margin-top:2px;" >
+    <div style=" float:left;width: 22%;height: 99%">
+        <div class="row form-group">
+            <div class="form-group col-xs-12">
+                <div class="col-xs-12">
+                    <a href="scene1.html">
+                        <button type="button" class="btn  btn-primary" id="" onclick="" >
+                            <span>场景一获取棋局信息</span>
+                        </button>
+                    </a>
+                    <a href="scene2.html">
+                        <button type="button" class="btn  btn-primary" id="" onclick="" >
+                            <span>场景二实时模式</span>
+                        </button>
+                    </a>
+                </div>
+
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-xs-12">
+                    <a href="scene3.html">
+                        <button type="button" class="btn  btn-primary" id="" onclick="" >
+                            <span>场景三复盘模式</span>
+                        </button>
+                    </a>
+                    <a href="scene4.html">
+                        <button type="button" class="btn  btn-primary" id="" onclick="" >
+                            <span>场景四对弈模式</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div class="form-group col-xs-12 ">
+                <div class="col-xs-10">
+                    <input value="192.168.1.199:8989/websocket"  type="text"  class="form-control" id="serverAddress" name="" placeholder="请输入服务器地址" />
+                </div>
+            </div>
+            <div class="form-group col-xs-12 col-xs-12"  >
+                <div class="row-fluid">
+                    <div class="col-xs-12">
+                        <button type="button" class="btn  btn-primary" id="clientWebSocketBtn" onclick="connentServer()" >
+                            <span>连&nbsp;接</span>
+                        </button>
+                        <button type="button" class="btn  btn-danger" id="closeWebSocketBtn" onclick="closeWebSocket()" >
+                            <span>断&nbsp;开</span>
+                        </button>
+                        <img src="../img/offline.png" id="clientStatusIcon">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-xs-12" >
+                <div class="col-xs-10">
+                    <input type="text"  class="form-control" id="deviceNo" name=""  value="B0A04756CB21807151544D4D" />
+                </div>
+            </div>
+            <div class="form-group col-xs-12" >
+                <div class="col-xs-5">
+                    <label id="deviceStatus" type="button" class="form-control "  style="width:100%;">
+                        <span>未连接</span>
+                    </label>
+                </div>
+                <div class="col-xs-5">
+                    <button type="button" class="btn  btn-primary " id="connectDevice" onclick="connectDevice()"  style="width:100%;">
+                        <span>连接棋盘</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="form-group col-xs-12" >
+                <div class="col-xs-5">
+                    <label  class="form-control" id="ModalName" onclick="" >
+                        <span></span>
+                    </label>
+                </div>
+                <div class="col-xs-5">
+                    <button disabled="disabled" type="button" class="btn  btn-primary " id="replay" onclick="startReplay()"  style="width:100%;">
+                        <span>开始复盘</span>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group col-xs-12" >
+                <div class="col-xs-3">
+                    <input type="text"  class="form-control" id="x" name=""  value="" placeholder="X坐标" />
+                </div>
+                <div class="col-xs-3">
+                    <input type="text"  class="form-control" id="y" name=""  value="" placeholder="Y坐标"/>
+                </div>
+                <div class="col-xs-3">
+                    <input type="text"  class="form-control" id="c" name=""  value="" placeholder="黑白子"/>
+                </div>
+                <div class="col-xs-3">
+                    <button type="button" class="btn  btn-primary " id="" onclick="downChress()"  style="width:100%;">
+                        <span>落子</span>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group col-xs-12" >
+                <div class="col-xs-12">
+                    <textarea onchange="" name="" class=" form-control" rows="8" cols="45" maxlength="200" id="sendMsg"> </textarea>
+                </div>
+            </div>
+            <div class="form-group col-xs-12" >
+                <div class="col-xs-12">
+                    <button property="输入json数组完成批量落子复盘" style="width: 100%" type="button" class="btn   btn-inverse" id="sendBtn" onclick="arraysReplay()" >
+                        <span>发&nbsp;送(Enter)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div style=" width:58%; height: 99%;float: left;">
+        <div class="mui-content" >
+            <div id="board">
+            </div>
+            <ul class="mui-table-view" id="btnList">
+                <button type="button" data-type="first" class="mui-btn mui-btn-blue">第一手</button>
+                <button type="button" data-type="previous" class="mui-btn mui-btn-blue">上一步</button>
+                <button type="button" data-type="next" class="mui-btn mui-btn-blue">下一步</button>
+                <button type="button" data-type="last" class="mui-btn mui-btn-blue">最新手</button>
+                <button type="button" data-type="tosgf" class="mui-btn mui-btn-blue">tosgf</button>
+                <button type="button" data-type="mark" class="mui-btn mui-btn-blue">切换标记</button>
+                <button type="button" data-type="trymove" class="mui-btn mui-btn-blue">试下</button>
+                <button type="button" data-type="endtry" class="mui-btn mui-btn-blue">结束试下</button>
+                <button type="button" data-type="delete" class="mui-btn mui-btn-blue">删一子</button>
+                <button type="button" data-type="deleteAll" class="mui-btn mui-btn-blue">删后续节点</button>
+                <button id="deleteBranch" type="button" data-type="deleteBranch" class="mui-btn mui-btn-blue">删除分支</button>
+                <button type="button" data-type="addBranch" class="mui-btn mui-btn-blue">添加分支</button>
+                <button type="button" data-type="pass" class="mui-btn mui-btn-blue">pass</button>
+            </ul>
+            <ul class="mui-table-view" id="branchs" ></ul>
+        </div>
+    </div>
+    <div style="float: right;width: 20%;height: 99%;margin-right: 0%">
+
+        <div onchange="" name="" class=" form-control" id="logDiv" style="width: 90%;margin: 0 auto; height: 100%;overflow-y: auto; overflow-x:auto;"> </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="../wgo/kifu.js"></script>
+<script type="text/javascript" src="../wgo/sgfparser.js"></script>
+<script type="text/javascript" src="../wgo/player.js"></script>
+<script type="text/javascript" src="../wgo/basicplayer.js"></script>
+<script type="text/javascript" src="../wgo/player.editable.js"></script>
+<script type="text/javascript" src="../wgo/scoremode.js"></script>
+<script type="text/javascript" src="../wgo/player.trymove.js"></script>
+<script type="text/javascript" src="../wgo/player.maker.js"></script>
+<script type="text/javascript" src="../js/scene3.js"></script>
+<script type="text/javascript" src="../js/common.js" ></script>
+
+<script type="text/javascript" src="../js/json2.js"></script>
+</body>
+</html>

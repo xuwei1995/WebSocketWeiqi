@@ -1537,6 +1537,7 @@ Board.prototype = {
 	},
 
 	addEventListener: function(type, callback) {
+
 		var _this = this,
 			evListener = {
 				type: type,
